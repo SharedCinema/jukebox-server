@@ -1,4 +1,4 @@
-# Hackathon Server
+# Jukebox Server
 
 ## Dependicies
 You'll need a few things to get started:
