@@ -1,0 +1,23 @@
+{
+  "name": "jukebox-server",
+  "description": "Server framework for Jukebox",
+  "version": "0.0.1",
+  "homepage": "http://github.com/SharedCinema/",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/SharedCinema/jukebox-server.git"
+  },
+  "authors": ["Chris Abrams <mail@chrisabrams.com>", "Kevin Nelson <>"],
+  "dependencies": {
+    "connect": "1.8.5",
+    "express": "2.5.2",
+    "jade": "0.20.0",
+    "mongoose": "2.4.8",
+    "socket.io": "*"
+  },
+  "devDependencies": {
+  	"mocha": "*",
+  	"should": "*"
+  },
+  "engine": "node >= 0.6.6"
+}
