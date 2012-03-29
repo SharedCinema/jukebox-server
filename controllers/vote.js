@@ -14,14 +14,7 @@ exports.setup = function (action, socket) {
 	});
 };
 
-
-
-
-
-
-
-
-socket.on("upvote", function(data) {
+/*socket.on("upvote", function(data) {
   var queueItem = data.queueItem;
   models.RankedQueueItem.find(queueItem, function(err, item) {
     if(!item) {
@@ -31,4 +24,4 @@ socket.on("upvote", function(data) {
       console.log(item.upvotes);
     }
   });
-});
+});*/

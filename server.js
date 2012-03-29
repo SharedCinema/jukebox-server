@@ -1,4 +1,9 @@
 /**
+ * Server configuration
+ */
+var serverConf = require('./config/config');
+
+/**
  * @objects Dependecies
  *
  * @class app
@@ -9,17 +14,11 @@
  * @module express
  * @module fs
  * @module io
- *
- * @object port
- * @desc Holds the value of the port the server runs on
- * @type {String}
  */
 var app
     , connect = require("connect")
     , express = require("express")
     , fs      = require("fs")
-    , io      = require("socket.io")
-    , port    = (process.env.PORT || 8081)
     , url     = require("url");
 
 /**
@@ -32,15 +31,24 @@ var path = __dirname;
 /**
  * Configuration for express
  */
-var server = express.createServer();
+var server = module.exports = express.createServer();
+server.listen(serverConf.port, null);
+
+/**
+ * @class sio
+ * @desc Starts the web sockets for the server
+ * @param {Object} port
+ */
+var sio = new require('./lib/socket-server.js')(server);
+
 server.configure(function(){
-    server.set("views", path + "/views");
-    server.set("view options", { layout: false });
-    server.use(connect.bodyParser());
-    server.use(express.cookieParser());
-    server.use(express.session({secret: "sh44FSFEIPANVPOEANVh5h55h66h7h7x01hhh!"}));
-    server.use(connect.static(path + "/static"));
-    server.use(server.router);
+  server.set("views", path + "/views");
+  server.set("view options", { layout: false });
+  server.use(connect.bodyParser());
+  server.use(express.cookieParser());
+  server.use(express.session({secret: "sh44FSFEIPANVPOEANVh5h55h66h7h7x01hhh!"}));
+  server.use(connect.static(path + "/public"));
+  server.use(server.router);
 });
 
 /**
@@ -55,47 +63,13 @@ server.error(function(err, req, res, next){
 });
 
 /**
- * @method app.listen()
- * @desc Starts the node server
- * @param {Object} port
+ * Blank route so visiting server in HTTP will result in blank screen, otherwise you get a "cannot GET /" error
  */
-server.listen(port);
-
-/**
- * @class sio
- * @desc Starts the web sockets for the server
- * @param {Object} port
- */
-var sio = io.listen(server);
-
-/**
- * @namespace sio.sockets
- * @desc Starts the node server
- */
-sio.sockets.on("connection", function(socket) {
-  console.log("Client Connected");
-
-  /**
-   * @method socket.on()
-   * @desc 
-   */
-  socket.on("message", function(data) {
-    socket.broadcast.emit("server_message", data);
-    socket.emit("server_message", data);
-  });
-  socket.on("disconnect", function() {
-    console.log("Client Disconnected.");
-  });
-
-  socket.on("api", function(request) {
-    var controller = request.controller;
-    var action = request.action;
-    
-    require("./controllers/" + controller).setup(action, socket);
-  });
+server.get("/", function(req, res) {
+  res.render("blah.jade");
 });
 
 /**
  * Display message to server console that the server is now ready to be listened to
  */
-console.log("Jukebox's server is now listening at: http://0.0.0.0:" + port);
+console.log('Running in '+(process.env.NODE_ENV || 'development')+' mode @ '+serverConf.uri);
